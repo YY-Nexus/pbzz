@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss"
 
 const config: Config = {
-  darkMode: "class", // 修复为字符串格式
+  darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
