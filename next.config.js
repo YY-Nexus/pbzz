@@ -10,10 +10,11 @@ const nextConfig = {
   images: {
     unoptimized: true, // 静态导出需要禁用图片优化
   },
-  // 禁用服务器组件和API路由
+  // 移除无效的experimental配置
   experimental: {
-    appDir: true,
-    serverComponents: false,
+    // 这些选项在Next.js 15中不再有效
+    // appDir: true,
+    // serverComponents: false,
   },
 }
 
