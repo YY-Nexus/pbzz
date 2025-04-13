@@ -1,34 +1,34 @@
-export function FeaturesSection() {
+import type React from "react"
+
+interface Feature {
+  title: string
+  description: string
+  icon: React.ReactNode
+}
+
+interface FeaturesSectionProps {
+  features: Feature[]
+}
+
+const FeaturesSection: React.FC<FeaturesSectionProps> = ({ features }) => {
   return (
-    <section className="py-16 px-6 md:px-12 lg:px-20">
-      <div className="container mx-auto">
-        <div className="mb-12">
-          <h3 className="text-sm uppercase tracking-wider text-beige-700 mb-2">A Rare Gem</h3>
-          <p className="text-brown-600 max-w-3xl">
-            Our hotel sets the standard for luxury and comfort, offering an array of amenities designed to make your
-            stay unforgettable. From the moment you arrive, you'll be enveloped in an atmosphere of refined elegance and
-            attentive service that caters to your every need.
-          </p>
-        </div>
-
-        <div className="mb-16">
-          <h2 className="text-2xl md:text-3xl font-serif text-brown-800 mb-6">Suites & Rooms</h2>
-          <p className="text-brown-600 max-w-3xl">
-            Discover our collection of meticulously designed suites and rooms, each offering a perfect blend of comfort
-            and sophistication. Every space is thoughtfully appointed with premium furnishings and luxurious amenities
-            to ensure an exceptional stay.
-          </p>
-        </div>
-
-        <div className="mb-16">
-          <h3 className="text-sm uppercase tracking-wider text-beige-700 mb-2">The Suite Life</h3>
-          <p className="text-brown-600 max-w-3xl">
-            Experience the epitome of luxury in our signature suites, where spacious layouts meet elegant design. Each
-            suite features premium bedding, state-of-the-art technology, and breathtaking views, creating a sanctuary of
-            comfort and style during your stay.
-          </p>
+    <section className="py-12 bg-gray-50">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-8">Key Features</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
+            <div key={index} className="bg-white rounded-lg shadow-md p-6">
+              <div className="flex items-center mb-4">
+                <span className="text-indigo-600 text-2xl mr-3">{feature.icon}</span>
+                <h3 className="text-xl font-semibold text-gray-800">{feature.title}</h3>
+              </div>
+              <p className="text-gray-600">{feature.description}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
   )
 }
+
+export default FeaturesSection
