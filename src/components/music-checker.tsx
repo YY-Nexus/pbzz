@@ -18,7 +18,8 @@ const MusicChecker: React.FC<MusicCheckerProps> = () => {
     try {
       new URL(musicUrl)
       setIsValidUrl(true)
-    } catch (_) {
+    } catch {
+      // 移除未使用的变量 '_'
       setIsValidUrl(false)
     }
   }
