@@ -18,7 +18,7 @@ const MusicChecker: React.FC<MusicCheckerProps> = () => {
     try {
       new URL(musicUrl)
       setIsValidUrl(true)
-    } catch (error) {
+    } catch (_) {
       setIsValidUrl(false)
     }
   }

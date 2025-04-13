@@ -15,7 +15,7 @@ const MusicHelp = () => {
       <ul>
         <li>Make sure your internet connection is stable.</li>
         <li>Try refreshing the page.</li>
-        <li>Clear your browser's cache and cookies.</li>
+        <li>Clear your browser&apos;s cache and cookies.</li>
       </ul>
     </div>
   )
