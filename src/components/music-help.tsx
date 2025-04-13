@@ -7,8 +7,8 @@ const MusicHelp = () => {
       <p>To play a song, simply click on the play button next to the song title.</p>
       <h3>How to Add a Song to a Playlist</h3>
       <p>
-        To add a song to a playlist, click on the "Add to Playlist" button and select the playlist you want to add it
-        to.
+        To add a song to a playlist, click on the &quot;Add to Playlist&quot; button and select the playlist you want to
+        add it to.
       </p>
       <h3>Troubleshooting</h3>
       <p>If you are experiencing issues with the music player, please try the following:</p>

@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 
 interface WishNote {
   id: number
@@ -11,7 +11,7 @@ interface WishNote {
 const WishNotes: React.FC = () => {
   const [wishNotes, setWishNotes] = useState<WishNote[]>([])
 
-  const getRandomWish = () => {
+  const getRandomWish = useCallback(() => {
     const wishes = [
       "I wish for world peace.",
       "I wish for a million dollars.",
@@ -21,7 +21,7 @@ const WishNotes: React.FC = () => {
     ]
     const randomIndex = Math.floor(Math.random() * wishes.length)
     return { id: Date.now(), text: wishes[randomIndex] }
-  }
+  }, [])
 
   useEffect(() => {
     const initialWish = getRandomWish()

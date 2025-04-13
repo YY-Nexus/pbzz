@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 
-type MusicCheckerProps = {}
+type MusicCheckerProps = Record<string, never>
 
 const MusicChecker: React.FC<MusicCheckerProps> = () => {
   const [musicUrl, setMusicUrl] = useState("")
@@ -18,7 +18,7 @@ const MusicChecker: React.FC<MusicCheckerProps> = () => {
     try {
       new URL(musicUrl)
       setIsValidUrl(true)
-    } catch (_: any) {
+    } catch (error) {
       setIsValidUrl(false)
     }
   }
