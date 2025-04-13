@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import SimpleMusicPlayer from "@/components/simple-music-player"
 
 export default function Home() {
   return (
@@ -33,6 +34,11 @@ export default function Home() {
               <Link href="/rsvp">立即回复</Link>
             </Button>
           </div>
+        </div>
+
+        {/* 添加音乐播放器 - 放在右下角 */}
+        <div className="absolute bottom-8 right-8 z-20">
+          <SimpleMusicPlayer />
         </div>
       </div>
 

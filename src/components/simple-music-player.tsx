@@ -1,10 +1,8 @@
 "use client"
 
-// components/simple-music-player.tsx
-
 import { useState, useRef, useEffect } from "react"
 
-// 确保这些URL是正确的，如果不是，请更新它们
+// 确保这些URL是正确的
 const MUSIC_LIST = [
   {
     title: "Electric Pulse",
@@ -27,15 +25,48 @@ const MUSIC_LIST = [
 const SimpleMusicPlayer = () => {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [userInteracted, setUserInteracted] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
 
   const currentTrack = MUSIC_LIST[currentTrackIndex]
+
+  // 监听用户交互以启用自动播放
+  useEffect(() => {
+    const handleUserInteraction = () => {
+      if (!userInteracted) {
+        setUserInteracted(true)
+        // 尝试自动播放
+        if (audioRef.current) {
+          audioRef.current
+            .play()
+            .then(() => {
+              setIsPlaying(true)
+              console.log("Auto-play started successfully")
+            })
+            .catch((error) => {
+              console.error("Auto-play failed:", error)
+            })
+        }
+      }
+    }
+
+    // 添加各种用户交互事件监听器
+    document.addEventListener("click", handleUserInteraction)
+    document.addEventListener("touchstart", handleUserInteraction)
+    document.addEventListener("keydown", handleUserInteraction)
+
+    return () => {
+      document.removeEventListener("click", handleUserInteraction)
+      document.removeEventListener("touchstart", handleUserInteraction)
+      document.removeEventListener("keydown", handleUserInteraction)
+    }
+  }, [userInteracted])
 
   useEffect(() => {
     if (isPlaying) {
       audioRef.current?.play().catch((error) => {
         console.error("Playback failed:", error)
-        setIsPlaying(false) // Stop playing if there's an error
+        setIsPlaying(false)
       })
     } else {
       audioRef.current?.pause()
@@ -59,13 +90,23 @@ const SimpleMusicPlayer = () => {
   }
 
   return (
-    <div style={{ padding: "20px", border: "1px solid #ccc", borderRadius: "5px", width: "300px" }}>
-      <h3>{currentTrack.title}</h3>
+    <div className="bg-black/30 backdrop-blur-md text-white p-4 rounded-lg shadow-lg">
+      <h3 className="text-lg font-medium mb-2">{currentTrack.title}</h3>
       <audio ref={audioRef} src={currentTrack.src} onEnded={handleEnded} />
-      <div style={{ marginTop: "10px" }}>
-        <button onClick={handlePrev}>Previous</button>
-        <button onClick={handlePlayPause}>{isPlaying ? "Pause" : "Play"}</button>
-        <button onClick={handleNext}>Next</button>
+
+      <div className="flex space-x-2">
+        <button onClick={handlePrev} className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition">
+          ◀
+        </button>
+        <button
+          onClick={handlePlayPause}
+          className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition flex-grow"
+        >
+          {isPlaying ? "❚❚" : "▶"}
+        </button>
+        <button onClick={handleNext} className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition">
+          ▶
+        </button>
       </div>
     </div>
   )
