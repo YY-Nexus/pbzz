@@ -12,7 +12,6 @@ import { CountdownTimer } from "@/components/countdown-timer"
 import { Footer } from "@/components/footer"
 import { WishNotes } from "@/components/wish-notes"
 import { MusicPlayer } from "@/components/music-player"
-import { MusicFileChecker } from "@/components/music-file-checker"
 
 export default function Home() {
   // Add smooth scroll behavior for anchor links
@@ -58,7 +57,6 @@ export default function Home() {
       <Footer />
       <WishNotes />
       <MusicPlayer />
-      <MusicFileChecker />
     </main>
   )
 }
