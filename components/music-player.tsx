@@ -13,16 +13,19 @@ const defaultMusicList = [
     id: "default-1",
     title: "轻松旋律",
     src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    isUrl: true,
   },
   {
     id: "default-2",
     title: "温馨时刻",
     src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+    isUrl: true,
   },
   {
     id: "default-3",
     title: "浪漫钢琴",
     src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+    isUrl: true,
   },
 ]
 
@@ -30,6 +33,11 @@ interface MusicTrack {
   id: string
   title: string
   src: string
+  isLocal?: boolean
+  isUrl?: boolean
+  fileName?: string
+  fileType?: string
+  fileSize?: number
 }
 
 export function MusicPlayer() {
@@ -157,9 +165,36 @@ export function MusicPlayer() {
           return
         }
 
+        console.log("正在加载音频:", {
+          title: currentTrack.title,
+          src: currentTrack.src,
+          isLocal: currentTrack.isLocal,
+          isUrl: currentTrack.isUrl,
+          fileName: currentTrack.fileName,
+          fileType: currentTrack.fileType,
+        })
+
         // 更新音频源
         audioRef.current.pause()
         audioRef.current.src = currentTrack.src
+
+        // 添加更详细的错误处理
+        const handleSpecificError = () => {
+          if (audioRef.current) {
+            const errorCode = audioRef.current.error ? audioRef.current.error.code : "未知"
+            const errorMessage = audioRef.current.error ? audioRef.current.error.message : "未知错误"
+            console.error(`音频错误 (${errorCode}): ${errorMessage}`, {
+              track: currentTrack.title,
+              src: currentTrack.src,
+              isLocal: currentTrack.isLocal,
+              isUrl: currentTrack.isUrl,
+            })
+            setError(`加载失败 (${errorCode}): ${errorMessage}`)
+          }
+        }
+
+        audioRef.current.onerror = handleSpecificError
+
         audioRef.current.load()
 
         // 如果之前在播放，则继续播放
@@ -174,7 +209,7 @@ export function MusicPlayer() {
         }
       } catch (err) {
         console.error("加载音频失败:", err)
-        setError("加载音频失败")
+        setError(`加载音频失败: ${err instanceof Error ? err.message : "未知错误"}`)
         setLoading(false)
       }
     }
@@ -310,21 +345,79 @@ export function MusicPlayer() {
   }
 
   // 处理音乐上传
-  const handleMusicUpload = ({ title, file }: { title: string; file: File }) => {
-    // 创建文件的URL
-    const fileUrl = URL.createObjectURL(file)
+  const handleMusicUpload = ({ title, file, url }: { title: string; file: File | null; url?: string }) => {
+    try {
+      // 处理URL上传
+      if (url) {
+        // 添加到音乐列表
+        const newTrack: MusicTrack = {
+          id: `url-${Date.now()}`,
+          title,
+          src: url,
+          isUrl: true,
+        }
 
-    // 添加到音乐列表
-    const newTrack: MusicTrack = {
-      id: `upload-${Date.now()}`,
-      title,
-      src: fileUrl,
+        setMusicList((prev) => [...prev, newTrack])
+
+        // 自动切换到新添加的音乐
+        setCurrentTrackIndex(musicList.length)
+
+        console.log("已添加URL音频:", {
+          title,
+          url,
+        })
+
+        return
+      }
+
+      // 处理文件上传
+      if (!file) {
+        setError("未提供文件或URL")
+        return
+      }
+
+      // 创建文件的URL
+      const fileUrl = URL.createObjectURL(file)
+
+      // 测试音频是否可以加载
+      const testAudio = new Audio()
+      testAudio.src = fileUrl
+
+      // 添加错误处理
+      testAudio.onerror = () => {
+        console.error("测试音频加载失败:", testAudio.error)
+        setError(`音频加载失败: ${file.name}`)
+        // 释放URL
+        URL.revokeObjectURL(fileUrl)
+      }
+
+      // 添加到音乐列表
+      const newTrack: MusicTrack = {
+        id: `upload-${Date.now()}`,
+        title,
+        src: fileUrl,
+        isLocal: true, // 标记为本地文件
+        fileName: file.name, // 保存原始文件名用于调试
+        fileType: file.type, // 保存文件类型用于调试
+        fileSize: file.size, // 保存文件大小用于调试
+      }
+
+      setMusicList((prev) => [...prev, newTrack])
+
+      // 自动切换到新上传的音乐
+      setCurrentTrackIndex(musicList.length)
+
+      // 显示调试信息
+      console.log("已上传音频文件:", {
+        name: file.name,
+        type: file.type,
+        size: `${(file.size / 1024).toFixed(2)} KB`,
+        url: fileUrl,
+      })
+    } catch (err) {
+      console.error("处理上传文件时出错:", err)
+      setError(`处理文件失败: ${err instanceof Error ? err.message : "未知错误"}`)
     }
-
-    setMusicList((prev) => [...prev, newTrack])
-
-    // 自动切换到新上传的音乐
-    setCurrentTrackIndex(musicList.length)
   }
 
   // 删除音乐
@@ -363,7 +456,7 @@ export function MusicPlayer() {
         <div className="fixed bottom-6 right-6 z-40 bg-dark-800/80 backdrop-blur-md rounded-lg p-4 shadow-lg">
           <div className="flex items-center">
             <Music size={20} className="text-rose-300 mr-2" />
-            <p className="text-light-100 text-sm">请上传音乐以开始播放</p>
+            <p className="text-light-100 text-sm">请添加音乐以开始播放</p>
           </div>
         </div>
       </>
@@ -418,6 +511,8 @@ export function MusicPlayer() {
                               {currentTrackIndex === index && isPlaying && (
                                 <span className="ml-1 inline-block animate-pulse">▶</span>
                               )}
+                              {track.isUrl && <span className="ml-1 text-blue-400 text-[10px]">URL</span>}
+                              {track.isLocal && <span className="ml-1 text-green-400 text-[10px]">本地</span>}
                             </span>
                           </div>
                         </button>

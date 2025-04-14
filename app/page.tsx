@@ -12,6 +12,8 @@ import { CountdownTimer } from "@/components/countdown-timer"
 import { Footer } from "@/components/footer"
 import { WishNotes } from "@/components/wish-notes"
 import { MusicPlayer } from "@/components/music-player"
+// 导入AudioDebug组件
+import { AudioDebug } from "@/components/audio-debug"
 
 export default function Home() {
   // Add smooth scroll behavior for anchor links
@@ -44,6 +46,7 @@ export default function Home() {
     }
   }, [])
 
+  // 在return语句中添加AudioDebug组件
   return (
     <main className="min-h-screen flex flex-col">
       <Header />
@@ -57,6 +60,7 @@ export default function Home() {
       <Footer />
       <WishNotes />
       <MusicPlayer />
+      <AudioDebug />
     </main>
   )
 }
