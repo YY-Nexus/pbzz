@@ -19,7 +19,7 @@ const raleway = Raleway({
 
 // 更新网站标题和描述
 export const metadata: Metadata = {
-  title: "彭勃 & 真真的婚礼 | 2025年6月15日",
+  title: "彭勃 & 真真的婚礼 | 2025年4月15日",
   description: "诚挚邀请您参加我们的婚礼，共同见证这美好的时刻",
     generator: 'v0.dev'
 }
